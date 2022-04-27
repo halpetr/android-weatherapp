@@ -3,7 +3,7 @@ An app for getting current weather information based on user location or by sear
 Also possibly an option for getting forecast for selected place or user location.
 # Author
 Petr Halinen
-#Screenshots
+# Screenshots
 Coming soon.
 # Tech/framework used
 Created using Kotlin on Android platform. Using https://openweathermap.org/api API for weather info.
