@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/mainshape.xml" value="0.1925" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/shape.xml" value="0.1925" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/activity_main.xml" value="0.33605072463768115" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/header.xml" value="0.33605072463768115" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/main_layout.xml" value="0.33605072463768115" />

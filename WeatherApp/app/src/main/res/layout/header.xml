@@ -9,7 +9,7 @@
         android:textAlignment="center"
         android:textSize="32sp"
         android:padding="10sp"
-        android:background="#0013de"
+        android:background="#2C6877"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/cityname" />

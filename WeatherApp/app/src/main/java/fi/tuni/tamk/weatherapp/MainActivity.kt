@@ -3,8 +3,10 @@ package fi.tuni.tamk.weatherapp
 import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.squareup.picasso.Picasso
 import fi.tuni.tamk.weatherapp.weatherData.WeatherObject
@@ -23,7 +25,8 @@ class MainActivity : AppCompatActivity() {private lateinit var weatherData : Tex
         cityName = findViewById(R.id.headerText)
         cityName.setTextColor(Color.WHITE)
         iconView = findViewById<ImageView>(R.id.icon)
-
+        val mainLayout = findViewById<View>(R.id.mainLayout)
+        mainLayout.setBackgroundColor(Color.parseColor("#76381A"))
     }
 
     override fun onResume() {
@@ -37,9 +40,9 @@ class MainActivity : AppCompatActivity() {private lateinit var weatherData : Tex
         thread {
             val responsebody = processUrl(url)
             val weather: WeatherObject = responsebody
-            val weatherNow = weather.weather?.get(0)?.main.toString()
-            iconUrl = "http://openweathermap.org/img/w/01d.png"
-            val weatherString = weather.weather.toString()
+            val weatherNow = "${weather.weather?.get(0)?.main.toString()}\n${weather.weather?.get(0)?.description.toString()}" +
+                    "\n${weather.main?.temp.toString()} °C\n${weather.wind?.speed.toString()} m/s"
+            iconUrl = "http://openweathermap.org/img/w/${weather.weather?.get(0)?.icon}.png"
             context.runOnUiThread() {
                 weatherData.text = weatherNow
                 cityName.text = weather.name
