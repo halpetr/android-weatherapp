@@ -1,31 +1,41 @@
 package fi.tuni.tamk.weatherapp
 
 import android.app.Activity
+import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.telephony.TelephonyManager
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.toColorInt
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.squareup.picasso.Picasso
 import fi.tuni.tamk.weatherapp.weatherData.WeatherObject
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.concurrent.thread
 
-class MainActivity : AppCompatActivity() {private lateinit var weatherData : TextView
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var weatherData : TextView
+    lateinit var sDefSystemLanguage: String
+    lateinit var countryCodeValue : String
     lateinit var cityName : TextView
     lateinit var iconUrl : String
     lateinit var iconView : ImageView
+    lateinit var mainLayout : View
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        weatherData = findViewById(R.id.weatherData)
-        cityName = findViewById(R.id.headerText)
-        cityName.setTextColor(Color.WHITE)
-        iconView = findViewById<ImageView>(R.id.icon)
-        val mainLayout = findViewById<View>(R.id.mainLayout)
+        // Initialize Views and variables:
+        initElements()
         mainLayout.setBackgroundColor(Color.parseColor("#76381A"))
     }
 
@@ -36,11 +46,32 @@ class MainActivity : AppCompatActivity() {private lateinit var weatherData : Tex
         }
     }
 
+    private fun initElements() {
+        weatherData = findViewById(R.id.weatherData)
+        cityName = findViewById(R.id.headerText)
+        cityName.setTextColor(Color.WHITE)
+        iconView = findViewById(R.id.icon)
+        mainLayout = findViewById(R.id.mainLayout)
+        // Set locale and country:
+        sDefSystemLanguage = Locale.getDefault().language
+        val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        countryCodeValue = tm.networkCountryIso
+    }
+
+    // If user changes language from device settings, update language:
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        sDefSystemLanguage = newConfig.locales.get(0).language
+    }
+
     private fun fetchWeatherAsync(context : Activity, url : String, callback: (rs : WeatherObject) -> Unit) {
         thread {
             val responsebody = processUrl(url)
             val weather: WeatherObject = responsebody
-            val weatherNow = "${weather.weather?.get(0)?.main.toString()}\n${weather.weather?.get(0)?.description.toString()}" +
+            // Set Date:
+            val timestamp = weather.dt.toLong()
+            val weatherNow = "${setDate(timestamp)}\n${weather.weather?.get(0)?.main.toString()}\n${weather.weather?.get(0)?.description.toString()}" +
                     "\n${weather.main?.temp.toString()} °C\n${weather.wind?.speed.toString()} m/s"
             iconUrl = "http://openweathermap.org/img/w/${weather.weather?.get(0)?.icon}.png"
             context.runOnUiThread() {
@@ -50,6 +81,12 @@ class MainActivity : AppCompatActivity() {private lateinit var weatherData : Tex
             }
             callback(responsebody)
         }
+    }
+
+    private fun setDate(timestamp : Long) : String {
+        val sdf = SimpleDateFormat("dd.MM.yy, HH:mm", Locale(sDefSystemLanguage, countryCodeValue.uppercase()))
+        val date = Date(timestamp * 1000)
+        return sdf.format(date)
     }
 
     private fun processUrl(url : String) : WeatherObject {
