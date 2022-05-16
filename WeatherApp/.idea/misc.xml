@@ -5,9 +5,13 @@
       <map>
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/mainshape.xml" value="0.1925" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/shape.xml" value="0.1925" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/weatherdatashape.xml" value="0.3155" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/activity_main.xml" value="0.33605072463768115" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/current_location.xml" value="0.358695652173913" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/gps.xml" value="0.358695652173913" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/header.xml" value="0.33605072463768115" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/main_layout.xml" value="0.33605072463768115" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/search.xml" value="0.358695652173913" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/weathericondata.xml" value="0.33605072463768115" />
       </map>
     </option>
