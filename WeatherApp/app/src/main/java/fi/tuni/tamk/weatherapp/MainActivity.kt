@@ -1,13 +1,17 @@
 package fi.tuni.tamk.weatherapp
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ImageView
@@ -16,6 +20,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.android.gms.location.*
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
 import com.vmadalin.easypermissions.EasyPermissions
@@ -26,6 +32,7 @@ import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
+
 
 /*
 * Main class of the application.*/
@@ -67,16 +74,63 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     // Url that is used to fetch data with
     private var myURL: String = ""
 
+    // LocationClient for accessing location info:
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private var devLatitude: Double? = null
+    private var devLongitude: Double? = null
+
+    protected var mLastLocation: Location? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // Initialize Views and variables:
         initElements()
         setOnClickListeners()
+        getLocation()
+    }
+
+    private val cancellationTokenSource = CancellationTokenSource()
+
+    @SuppressLint("MissingPermission")
+    private fun getLocation() {
+        // Not actually missing any permissions:
+        if (hasLocationPermission()) {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationClient.getCurrentLocation(
+                LocationRequest.PRIORITY_HIGH_ACCURACY,
+                cancellationTokenSource.token
+            ).addOnSuccessListener {
+                if (it != null) {
+                    val lt = "Latitude: " + it.latitude.toString().substring(0, 6)
+                    val ln = "Longitude: " + it.longitude.toString().substring(0, 6)
+                    lat.text = lt
+                    lon.text = ln
+                    devLatitude = it.latitude
+                    devLongitude = it.longitude
+                    Log.d("TAG", it.latitude.toString())
+                    Log.d("TAG", it.longitude.toString())
+                    getData("https://api.openweathermap.org/data/2.5/weather?lat=${it.latitude}&lon=${it.longitude}&appid=a287e2a5822a417191893749dedd8978&units=metric")
+                    Log.d("TAG", "https://api.openweathermap.org/data/2.5/weather?lat=${it.latitude}&lon=${it.longitude}&appid=a287e2a5822a417191893749dedd8978&units=metric")
+                }
+            }
+        } else {
+            Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+            requestLocationPermission()
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        if (devLatitude == null && devLongitude == null) {
+            getLocation()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        cancellationTokenSource.cancel()
     }
 
     // Initialize variables and views:
@@ -97,36 +151,41 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
     private fun setOnClickListeners() {
         searchButton.setOnClickListener {
-                myURL =
-                    "https://api.openweathermap.org/data/2.5/weather?q=${searchText.text.toString()}&appid=a287e2a5822a417191893749dedd8978&units=metric"
-                // If the app has permission to use location info then fetch data, else request the permission:
-                if (hasLocationPermission()) {
-                    fetchWeatherAsync(
-                        this,
-                        myURL
-                    ) {
-                        if (!it) {
-                            this.runOnUiThread {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Not a valid city!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
+            myURL =
+                "https://api.openweathermap.org/data/2.5/weather?q=${searchText.text.toString()}&appid=a287e2a5822a417191893749dedd8978&units=metric"
+            getData(myURL)
+        }
+
+
+    }
+
+    private fun getData(url: String) {
+        // If the app has permission to use location info then fetch data, else request the permission:
+        if (hasLocationPermission()) {
+            fetchWeatherAsync(
+                this,
+                url
+            ) {
+                if (!it) {
+                    this.runOnUiThread {
+                        Toast.makeText(
+                            applicationContext,
+                            "Not a valid city!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                } else {
-                    requestLocationPermission()
-                }
-                // Hide keyboard when button is pressed:
-                try {
-                    val imm: InputMethodManager =
-                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
-                } catch (e: Exception) {
                 }
             }
-
+        } else {
+            requestLocationPermission()
+        }
+        // Hide keyboard when button is pressed:
+        try {
+            val imm: InputMethodManager =
+                getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        } catch (e: Exception) {
+        }
     }
 
     private fun fetchWeatherAsync(
@@ -146,8 +205,8 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
                         weather.weather?.get(0)?.description.toString()
                     }" +
                             "\n${weather.main?.temp.toString()} °C\n${weather.wind?.speed.toString()} m/s"
-                val lt = "Latitude: " + weather.coord?.lat.toString().substring(0, 5)
-                val ln = "Longitude: " + weather.coord?.lon.toString().substring(0, 5)
+                val lt = "Latitude: " + weather.coord?.lat.toString().substring(0, 6)
+                val ln = "Longitude: " + weather.coord?.lon.toString().substring(0, 6)
                 context.runOnUiThread() {
                     weatherData.text = weatherNow
                     cityName.text = weather.name
@@ -174,7 +233,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private fun processUrl(url: String): WeatherObject? {
         val URI = URL(url)
         val conn: HttpURLConnection = URI.openConnection() as HttpURLConnection
-        if(conn.responseCode == 200) {
+        if (conn.responseCode == 200) {
             try {
                 val mp = ObjectMapper()
                 return mp.readValue(conn.inputStream, WeatherObject::class.java)
