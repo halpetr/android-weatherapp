@@ -30,7 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight=".5"
-            android:text="Hello World!"
             android:textSize="20sp"
             android:gravity="center_horizontal"
             android:padding="16sp"

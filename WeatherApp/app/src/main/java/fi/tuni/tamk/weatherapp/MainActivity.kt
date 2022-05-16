@@ -1,5 +1,6 @@
 package fi.tuni.tamk.weatherapp
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
@@ -10,10 +11,13 @@ import android.telephony.TelephonyManager
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.squareup.picasso.Picasso
+import com.vmadalin.easypermissions.EasyPermissions
 import fi.tuni.tamk.weatherapp.weatherData.WeatherObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -22,7 +26,8 @@ import java.util.*
 import kotlin.concurrent.thread
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
+    private val PERMISSION_LOCATION_REQUEST_CODE = 1
     private lateinit var weatherData : TextView
     lateinit var sDefSystemLanguage: String
     lateinit var countryCodeValue : String
@@ -41,9 +46,32 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        fetchWeatherAsync(this, "https://api.openweathermap.org/data/2.5/weather?q=Tampere&appid=a287e2a5822a417191893749dedd8978&units=metric") {
-            println(it)
+        if(hasLocationPermission()) {
+            fetchWeatherAsync(this, "https://api.openweathermap.org/data/2.5/weather?q=Tampere&appid=a287e2a5822a417191893749dedd8978&units=metric") {
+                println(it)
+            }
+        } else {
+            requestLocationPermission()
         }
+    }
+
+    private fun hasLocationPermission() =
+        EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)
+
+    private fun requestLocationPermission() {
+        EasyPermissions.requestPermissions(this, "Application requires Location Permission to work.",
+            PERMISSION_LOCATION_REQUEST_CODE, Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        if(hasLocationPermission()) {
+            Toast.makeText(applicationContext,"Permission Granted!", Toast.LENGTH_SHORT).show()
+            println("IM HERE")
+        }
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        TODO("Not yet implemented")
     }
 
     private fun initElements() {
@@ -77,7 +105,7 @@ class MainActivity : AppCompatActivity() {
             context.runOnUiThread() {
                 weatherData.text = weatherNow
                 cityName.text = weather.name
-                Picasso.get().load(iconUrl).into(iconView)
+                Picasso.get().load("http://openweathermap.org/img/w/${weather.weather?.get(0)?.icon}.png").into(iconView)
             }
             callback(responsebody)
         }
@@ -99,4 +127,5 @@ class MainActivity : AppCompatActivity() {
             conn.disconnect()
         }
     }
+
 }
