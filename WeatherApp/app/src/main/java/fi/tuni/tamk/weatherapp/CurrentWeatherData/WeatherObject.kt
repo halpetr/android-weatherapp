@@ -1,6 +1,9 @@
-package fi.tuni.tamk.weatherapp.WeatherData
+package fi.tuni.tamk.weatherapp.CurrentWeatherData
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import fi.tuni.tamk.weatherapp.WeatherData_common.Coord
+import fi.tuni.tamk.weatherapp.WeatherData_common.Weather
+import fi.tuni.tamk.weatherapp.WeatherData_common.Wind
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class WeatherObject(

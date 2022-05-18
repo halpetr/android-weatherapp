@@ -22,7 +22,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
-import fi.tuni.tamk.weatherapp.WeatherData.WeatherObject
+import fi.tuni.tamk.weatherapp.CurrentWeatherData.WeatherObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -172,9 +172,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             } else {
                 requestLocationPermission()
             }
-
         }
-
     }
 
     private fun updateUIValues(weather: WeatherObject?) {
@@ -212,6 +210,8 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         Log.d("TAG", "update stopped")
     }
 
+    /* Function for getting current weather based on users gps location.
+    *  Not actually missing any permissions. */
     @SuppressLint("MissingPermission")
     private fun getGPSWeather(loc: Location?) {
         if (hasLocationPermission()) {

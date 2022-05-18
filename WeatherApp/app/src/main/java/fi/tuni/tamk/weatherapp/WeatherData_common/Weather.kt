@@ -1,4 +1,4 @@
-package fi.tuni.tamk.weatherapp.WeatherData
+package fi.tuni.tamk.weatherapp.WeatherData_common
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
