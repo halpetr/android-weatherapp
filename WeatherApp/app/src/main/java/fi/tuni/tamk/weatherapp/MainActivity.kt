@@ -3,6 +3,7 @@ package fi.tuni.tamk.weatherapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.location.Location
@@ -23,6 +24,7 @@ import com.squareup.picasso.Picasso
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import fi.tuni.tamk.weatherapp.CurrentWeatherData.WeatherObject
+import fi.tuni.tamk.weatherapp.WeatherData_common.Coord
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -73,14 +75,20 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     // Button for getting weather at gps location:
     private lateinit var getByLocationBtn: Button
 
+    // Button for accessing forecast:
+    private lateinit var forecastButton: Button
+
     // Url that is used to fetch data with
     private lateinit var myURL: String
 
     // "Location" textview
-    lateinit var locationTextView: TextView
+    private lateinit var locationTextView: TextView
 
-    // String used to indicate what location data is being displayed
-    private lateinit var locationString: String
+    // Was search or gps last:
+    private var searched: Boolean = false
+
+    // Location from Search:
+    private lateinit var searchLocation: Coord
 
     // Google API LocationClient for accessing location info:
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -120,6 +128,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         searchText = findViewById(R.id.cityInput)
         searchButton = findViewById(R.id.searchBtn)
         getByLocationBtn = findViewById(R.id.gpsButton)
+        forecastButton = findViewById(R.id.forecastButton)
         locationTextView = findViewById(R.id.locationHeader)
         lat = findViewById(R.id.lat)
         lon = findViewById(R.id.lon)
@@ -160,6 +169,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
                 "https://api.openweathermap.org/data/2.5/weather?q=${searchText.text.toString()}&appid=a287e2a5822a417191893749dedd8978&units=metric"
             getSearchWeather(myURL) {
                 updateUIValues(it)
+                searched = true
                 val st = it?.name.toString() + " location:"
                 locationTextView.text = st
             }
@@ -169,9 +179,20 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         getByLocationBtn.setOnClickListener {
             if (hasLocationPermission()) {
                 getGPSWeather(latestLocation)
+                searched = false
             } else {
                 requestLocationPermission()
             }
+        }
+
+        forecastButton.setOnClickListener {
+            val intent = Intent(this, ForecastActivity::class.java)
+            if(searched) {
+                intent.putExtra("city", searchText.text.toString())
+            } else {
+                intent.putExtra("coords", latestLocation)
+            }
+            startActivity(intent)
         }
     }
 

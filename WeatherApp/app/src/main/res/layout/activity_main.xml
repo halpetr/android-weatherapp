@@ -68,4 +68,14 @@
         android:text="@string/get_weather_at_my_location"
         app:layout_constraintTop_toBottomOf="@+id/searchLayout" />
 
+    <include
+        android:id="@+id/floatButtonLayout"
+        layout="@layout/floatbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/gpsButton"
+        app:layout_constraintStart_toStartOf="@+id/gpsButton"
+        app:layout_constraintTop_toBottomOf="@+id/gpsButton" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

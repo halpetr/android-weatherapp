@@ -8,4 +8,6 @@
     <string name="current_location">My location:</string>
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
+    <string name="test">TextView</string>
+    <string name="forecast">Forecast</string>
 </resources>
