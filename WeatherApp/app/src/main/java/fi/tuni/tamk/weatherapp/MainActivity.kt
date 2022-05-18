@@ -5,8 +5,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     lateinit var iconView: ImageView
 
     // Variable used to check if the SettingsDialog was created already or not && to store said Dialog:
-    var settingsDialog: SettingsDialog? = null
+    private var settingsDialog: SettingsDialog? = null
 
     // TextInputEditText for city name:
     lateinit var searchText: TextInputEditText
@@ -71,9 +73,6 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     // Button for getting weather at gps location:
     private lateinit var getByLocationBtn: Button
 
-    // Switch for GPS:
-    lateinit var gpsSwitch: Switch
-
     // Url that is used to fetch data with
     private lateinit var myURL: String
 
@@ -86,11 +85,14 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     // Google API LocationClient for accessing location info:
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    // LocationCallback:
+    private lateinit var locationCallback: LocationCallback
+
+    // LastLocation from LocationCallback:
+    private lateinit var latestLocation: Location
+
     // LocationRequest config for settings:
     private var locationRequest = LocationRequest.create()
-
-    private var devLatitude: Double? = 0.0
-    private var devLongitude: Double? = 0.0
 
     private val cancellationTokenSource = CancellationTokenSource()
 
@@ -100,35 +102,17 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         // Initialize Views and variables:
         initElements()
         setOnClickListeners()
-        getGpsData()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        Log.d("onSaveInstanceState", "onSaveInstanceState()")
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        Log.d("onRestoreInstanceState", "onRestoreInstanceState()")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("onResume", "onResume")
-        Log.d("onResume", devLatitude.toString())
-        Log.d("onResume", devLongitude.toString())
+        getGPSWeather(null)
     }
 
     override fun onPause() {
         super.onPause()
         cancellationTokenSource.cancel()
-        Log.d("onPause", devLatitude.toString())
-        Log.d("onPause", devLongitude.toString())
     }
 
     // Initialize variables and views:
     private fun initElements() {
+        setLocationVariables()
         weatherData = findViewById(R.id.weatherData)
         cityName = findViewById(R.id.headerText)
         cityName.setTextColor(Color.WHITE)
@@ -139,18 +123,42 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         locationTextView = findViewById(R.id.locationHeader)
         lat = findViewById(R.id.lat)
         lon = findViewById(R.id.lon)
-        gpsSwitch = findViewById(R.id.gpsSwitch)
+        // Update location in interval if permission granted:
+        if(hasLocationPermission()) {
+            startGPSUpdate()
+        } else {
+            stopGPSUpdate()
+        }
         // Set locale and country:
         sDefSystemLanguage = Locale.getDefault().language
         val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         countryCodeValue = tm.networkCountryIso
     }
 
+    private fun setLocationVariables() {
+        // set LocationRequest properties:
+        locationRequest.interval = 1000 * INTERVAL_NORMAL
+        locationRequest.fastestInterval = 1000 * FAST_INTERVAL
+        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+
+        // initialize FusedLocationClient:
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        // LocationCallback:
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(p0: LocationResult) {
+                super.onLocationResult(p0)
+                latestLocation = p0.lastLocation
+                Log.d("TAG", "location updated")
+            }
+        }
+    }
+
     private fun setOnClickListeners() {
         searchButton.setOnClickListener {
             myURL =
                 "https://api.openweathermap.org/data/2.5/weather?q=${searchText.text.toString()}&appid=a287e2a5822a417191893749dedd8978&units=metric"
-            getSearchData(myURL) {
+            getSearchWeather(myURL) {
                 updateUIValues(it)
                 val st = it?.name.toString() + " location:"
                 locationTextView.text = st
@@ -158,17 +166,9 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
         }
 
-        gpsSwitch.setOnClickListener {
-            if(gpsSwitch.isChecked) {
-                println("Checked")
-            } else {
-                println("Unchecked")
-            }
-        }
-
         getByLocationBtn.setOnClickListener {
             if (hasLocationPermission()) {
-                getGpsData()
+                getGPSWeather(latestLocation)
             } else {
                 requestLocationPermission()
             }
@@ -198,14 +198,33 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private fun startGPSUpdate() {
+        if (hasLocationPermission()) {
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    private fun stopGPSUpdate() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+        Log.d("TAG", "update stopped")
+    }
 
     @SuppressLint("MissingPermission")
-    private fun getGpsData() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+    private fun getGPSWeather(loc: Location?) {
         if (hasLocationPermission()) {
-            fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY,
-                cancellationTokenSource.token).addOnSuccessListener { location ->
-                myURL = "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=a287e2a5822a417191893749dedd8978&units=metric"
+            if(loc == null) {
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    myURL = "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=a287e2a5822a417191893749dedd8978&units=metric"
+                    fetchWeatherAsync(myURL) { weatherObject ->
+                        updateUIValues(weatherObject)
+                    }
+                }
+            }
+            else {
+                myURL = "https://api.openweathermap.org/data/2.5/weather?lat=${loc.latitude}&lon=${loc.longitude}&appid=a287e2a5822a417191893749dedd8978&units=metric"
                 fetchWeatherAsync(myURL) { weatherObject ->
                     updateUIValues(weatherObject)
                 }
@@ -216,7 +235,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
     }
 
-    private fun getSearchData(url: String, callback: (rs: WeatherObject?) -> Unit) {
+    private fun getSearchWeather(url: String, callback: (rs: WeatherObject?) -> Unit) {
         fetchWeatherAsync(
             url
         ) {
@@ -303,13 +322,14 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         Toast.makeText(applicationContext, "Permission Granted!", Toast.LENGTH_SHORT).show()
-        getGpsData()
+        getGPSWeather(null)
     }
 
 // If user denies permission:
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
         // If it is permanently denied ("don't show this again") is selected.
         // Then need to show app settings because it will not work without permission:
+    //TODO: App crashes if settings are changed and user returns to APP
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             if (settingsDialog == null) {
                 settingsDialog = SettingsDialog.Builder(this).build()
