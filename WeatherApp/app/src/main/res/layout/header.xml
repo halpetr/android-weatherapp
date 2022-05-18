@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -7,11 +9,23 @@
     <TextView
         android:id="@+id/headerText"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#2C6877"
         android:padding="10sp"
         android:text="@string/city"
         android:textAlignment="center"
-        android:textSize="32sp" />
+        android:textSize="32sp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/gpsSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GPS"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/headerText"
+        app:layout_constraintEnd_toEndOf="@+id/headerText"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

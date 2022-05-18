@@ -11,15 +11,4 @@
         layout="@layout/current_location"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/gpsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="55sp"
-        android:layout_marginRight="55sp"
-        android:text="@string/get_weather_at_my_location"
-        app:layout_constraintTop_toBottomOf="@+id/include2"
-        tools:layout_editor_absoluteX="0dp" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

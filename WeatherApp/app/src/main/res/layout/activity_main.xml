@@ -41,20 +41,31 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
-        android:id="@+id/searchLayout"
-        layout="@layout/search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/include"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-    <include
         android:id="@+id/include"
         layout="@layout/gps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         tools:layout_editor_absoluteX="0dp" />
+
+    <include
+        android:id="@+id/searchLayout"
+        layout="@layout/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        tools:layout_editor_absoluteX="-16dp" />
+
+    <!--    gps icon by Icons8-->
+    <Button
+        android:id="@+id/gpsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25sp"
+        android:layout_marginRight="25sp"
+        android:drawableEnd="@drawable/gps_icon"
+        android:text="@string/get_weather_at_my_location"
+        app:layout_constraintTop_toBottomOf="@+id/searchLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
