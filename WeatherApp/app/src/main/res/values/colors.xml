@@ -8,5 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="accent">#FFFFFFFF</color>
-    <color name="titleBar">#C17135</color>
+    <color name="titleBar">#00092C</color>
+    <color name="roundShapeColor">#DDDDDD</color>
+    <color name="headerColor">#06113C</color>
+    <color name="backgroundColor">#DDDDDD</color>
+    <color name="buttonColor">#00092C</color>
 </resources>

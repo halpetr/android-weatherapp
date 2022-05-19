@@ -49,4 +49,12 @@ dependencies {
     implementation("com.vmadalin:easypermissions-ktx:1.0.0")
 
     implementation "com.google.android.gms:play-services-location:19.0.1"
+
+    // Card View
+    def cardview_version = "1.0.0"
+    implementation "androidx.cardview:cardview:$cardview_version"
+
+    // Recyclerview
+    def recyclerview_version = "1.2.1"
+    implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
 }

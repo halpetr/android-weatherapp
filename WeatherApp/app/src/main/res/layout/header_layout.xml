@@ -9,7 +9,7 @@
         android:id="@+id/headerText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#2C6877"
+        android:background="@color/headerColor"
         android:padding="10sp"
         android:text="@string/city"
         android:textAlignment="center"

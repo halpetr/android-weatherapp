@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="4sp"
         android:layout_marginRight="4sp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,6 +21,7 @@
             android:id="@+id/cityInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/weatherdatashape"
             android:gravity="center"
             android:hint="@string/type_a_city" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -28,7 +31,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25sp"
+        android:layout_marginTop="6sp"
         android:layout_marginRight="25sp"
+        android:backgroundTint="@color/buttonColor"
         android:text="@string/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

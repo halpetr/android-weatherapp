@@ -3,19 +3,32 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/button_bg.xml" value="0.209" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/gradient_header_drawable.xml" value="0.3625" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.241" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/mainshape.xml" value="0.1925" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/shape.xml" value="0.1925" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/drawable/weatherdatashape.xml" value="0.3155" />
-        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/activity_forecast.xml" value="0.3625" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/activity_forecast.xml" value="0.20260416666666667" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/current_location.xml" value="0.358695652173913" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/floatbtn.xml" value="0.3614583333333333" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/forecast_button.xml" value="0.20260416666666667" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/forecast_layout.xml" value="0.2015625" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/forecasts_list.xml" value="0.20260416666666667" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/gps.xml" value="0.358695652173913" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/header.xml" value="0.33605072463768115" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/header_layout.xml" value="0.3625" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/header_textview.xml" value="0.3625" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/layout_forecast_list_item.xml" value="0.2015625" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/location_display.xml" value="0.3625" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/location_display_layout.xml" value="0.3625" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/main_layout.xml" value="0.33605072463768115" />
         <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/search.xml" value="0.358695652173913" />
-        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/weathericondata.xml" value="0.33605072463768115" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/search_layout.xml" value="0.3625" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/weather_display.xml" value="0.20260416666666667" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/weather_display_item.xml" value="0.1" />
+        <entry key="..\:/TAMK/android-weatherapp/WeatherApp/app/src/main/res/layout/weathericondata.xml" value="0.25" />
       </map>
     </option>
   </component>

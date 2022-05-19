@@ -8,6 +8,6 @@ import fi.tuni.tamk.weatherapp.WeatherData_common.Wind
 data class ForecastItem(
     var dt: Long? = null,
     var main: Temp? = null,
-    var weather: Weather? = null,
+    var weather: MutableList<Weather>? = null,
     var wind: Wind? = null
 )
