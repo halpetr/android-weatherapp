@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="10dp"
+    android:layout_margin="2sp"
+    app:cardPreventCornerOverlap="false">
+
+        <LinearLayout
+            android:id="@+id/horizontalLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:background="@drawable/weatherdatashape"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/forecastItemIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".5"
+                android:contentDescription="@string/weathericon"
+                android:padding="16sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:orientation="vertical">
+                <!-- Display date & time: -->
+                <TextView
+                    android:id="@+id/forecastItemDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:padding="3sp"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <!-- Weather Conditions: -->
+                <TextView
+                    android:id="@+id/forecastItemWeather_conditions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:padding="3sp"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <!-- Display temperature: -->
+                <TextView
+                    android:id="@+id/forecastItemTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:padding="3sp"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <!-- Display wind speed: -->
+                <TextView
+                    android:id="@+id/forecastItemWind"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:padding="3sp"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+</androidx.cardview.widget.CardView>

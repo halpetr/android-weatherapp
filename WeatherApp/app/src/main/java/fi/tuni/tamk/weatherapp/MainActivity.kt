@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        this.title = "WeatherApp Current Weather"
         // Initialize Views and variables:
         initElements()
         setOnClickListeners()
@@ -157,14 +158,10 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     }
 
     private fun initWeatherDisplayItems() {
-        var view = findViewById<View>(date)
-        weatherData_date = view.findViewById(weather_display_item)
-        view = findViewById(weather_conditions)
-        weatherData_conditions = view.findViewById(weather_display_item)
-        view = findViewById(temp)
-        weatherData_temp = view.findViewById(weather_display_item)
-        view = findViewById(wind)
-        weatherData_wind = view.findViewById(weather_display_item)
+        weatherData_date = findViewById(date)
+        weatherData_conditions = findViewById(weather_conditions)
+        weatherData_temp = findViewById(temp)
+        weatherData_wind = findViewById(wind)
     }
 
     private fun setLocationVariables() {

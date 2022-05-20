@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">WeatherApp</string>
     <string name="weathericon">WeatherIcon</string>
-    <string name="city">City</string>
+    <string name="city">Loading…</string>
     <string name="type_a_city">Type a City</string>
     <string name="search">Search</string>
     <string name="get_weather_at_my_location">Get weather at my location</string>

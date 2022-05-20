@@ -1,54 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/dataLayout"
+    android:id="@+id/weather_display"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_weight=".5"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/horizontalLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="4sp"
-        android:layout_weight=".5"
-        android:background="@drawable/weatherdatashape"
-        android:orientation="horizontal">
+    <include layout="@layout/weather_display_item" />
 
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".5"
-            android:contentDescription="@string/weathericon"
-            android:padding="16sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:orientation="vertical">
-            <!-- Display date & time: -->
-            <include
-                android:id="@+id/date"
-                layout="@layout/weather_display_item">
-            </include>
-            <!-- Weather Conditions: -->
-            <include
-                android:id="@+id/weather_conditions"
-                layout="@layout/weather_display_item">
-            </include>
-            <!-- Display temperature: -->
-            <include
-                android:id="@+id/temp"
-                layout="@layout/weather_display_item">
-            </include>
-            <!-- Display wind speed: -->
-            <include
-                android:id="@+id/wind"
-                layout="@layout/weather_display_item">
-            </include>
-
-        </LinearLayout>
-    </LinearLayout>
 </LinearLayout>

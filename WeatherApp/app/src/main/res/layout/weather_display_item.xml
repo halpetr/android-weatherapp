@@ -1,26 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_weight=".5"
-    android:gravity="center_horizontal"
-    android:textSize="20sp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:layout_margin="4sp">
 
-    <TextView
-        android:id="@+id/weather_display_item"
+    <LinearLayout
+        android:id="@+id/horizontalLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:padding="3sp"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        android:background="@drawable/weatherdatashape"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:contentDescription="@string/weathericon"
+            android:padding="16sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:orientation="vertical">
+            <!-- Display date & time: -->
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="3sp"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <!-- Weather Conditions: -->
+            <TextView
+                android:id="@+id/weather_conditions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="3sp"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <!-- Display temperature: -->
+            <TextView
+                android:id="@+id/temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="3sp"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <!-- Display wind speed: -->
+            <TextView
+                android:id="@+id/wind"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="3sp"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
