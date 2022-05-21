@@ -12,4 +12,4 @@ Download zip file or clone the repository.
 # How to Run the App
 Open the project in android studio and run the app in emulator or on a real device.
 # Screencast
-...
+https://youtu.be/k5UaV1N1rPM
