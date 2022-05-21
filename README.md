@@ -1,6 +1,6 @@
 # Weather App
-An app for getting current weather information based on user location or by searching for a place.
-Also possibly an option for getting forecast for selected place or user location.
+An app for getting current weather information based on user location or by searching for a place &
+2 day weather forecast (every 3 hours) for selected place or user location.
 # Author
 Petr Halinen
 # Screenshots
