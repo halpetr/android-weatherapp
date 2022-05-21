@@ -30,8 +30,8 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
-            android:id="@+id/lat"
-            android:layout_width="match_parent"
+            android:id="@+id/latLabel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="6sp"
             android:layout_weight=".5"
@@ -40,13 +40,33 @@
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/lon"
-            android:layout_width="match_parent"
+            android:id="@+id/lat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6sp"
+            android:layout_marginEnd="6sp"
+            android:layout_weight=".5"
+            android:gravity="center"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/lonLabel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="6sp"
             android:layout_weight=".5"
             android:gravity="center"
             android:text="@string/longitude"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/lon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6sp"
+            android:layout_marginEnd="6sp"
+            android:layout_weight=".5"
+            android:gravity="center"
             android:textSize="15sp" />
     </LinearLayout>
 

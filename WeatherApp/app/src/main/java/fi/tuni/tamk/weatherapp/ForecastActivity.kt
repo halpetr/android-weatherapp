@@ -24,16 +24,16 @@ import kotlin.concurrent.thread
 class ForecastActivity : AppCompatActivity() {
 
     // String that stores city name as string:
-    lateinit var city: String
+    private lateinit var city: String
 
     // TextView for the Header containing city name:
-    lateinit var headerView: TextView
+    private lateinit var headerView: TextView
 
     // Location that contains the location for intent.extras:
-    lateinit var location: Location
+    private var location: Location? = null
 
     // String url that contains the string used to get data from API
-    lateinit var url: String
+    private lateinit var url: String
 
     // Recycler view:
     private lateinit var recyclerView: RecyclerView
@@ -83,10 +83,13 @@ class ForecastActivity : AppCompatActivity() {
             url =
                 "https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=a287e2a5822a417191893749dedd8978&units=metric&cnt=17"
         } else {
-            location = intent.extras?.get("coords") as Location
+            val lat = intent.extras?.get("lat") as String
+            val lon = intent.extras?.get("lon") as String
             url =
-                "https://api.openweathermap.org/data/2.5/forecast?lon=${location.longitude}&lat=${location.latitude}&appid=a287e2a5822a417191893749dedd8978&units=metric&cnt=17"
+                "https://api.openweathermap.org/data/2.5/forecast?lon=${lon}&lat=${lat}&appid=a287e2a5822a417191893749dedd8978&units=metric&cnt=17"
         }
+        println("parseIntent")
+        println(url)
     }
 
     /**
@@ -99,6 +102,8 @@ class ForecastActivity : AppCompatActivity() {
      */
     private fun setForecastData(url: String, callback: (ls: List<ForecastItem>) -> Unit) {
         fetchForecastAsync(url) { forecastObject ->
+            println("fetch")
+            println(forecastObject.toString())
             if (forecastObject != null) {
                 runOnUiThread {
                     headerView.text = forecastObject.city?.name

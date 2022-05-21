@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -40,7 +41,7 @@ private const val PERMISSION_LOCATION_REQUEST_CODE = 1
 
 /**
  * Main activity
- * Inherits EasyPermissions.PermissionCallbacks
+ * Implements EasyPermissions.PermissionCallbacks
  * @constructor Create empty Main activity
  */
 class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
@@ -108,7 +109,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private lateinit var locationCallback: LocationCallback
 
     // Last device location from LocationCallback, updated on app startup and every 30 seconds after that:
-    private lateinit var latestLocation: Location
+    private var latestLocation: Location? = null
 
     // LocationRequest config for settings:
     private var locationRequest = LocationRequest.create()
@@ -124,12 +125,15 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         // Initialize Views and variables:
         initElements()
         setOnClickListeners()
+        // Update location immediately and after in interval of 30 sec:
+        startGPSUpdate()
         // Get current weather based on gps location of the device:
         getGPSWeather()
     }
 
     override fun onResume() {
         super.onResume()
+        initElements()
         // Get current weather based on gps location of the device:
         getGPSWeather()
     }
@@ -152,8 +156,6 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         locationTextView = findViewById(locationHeader)
         lat = findViewById(R.id.lat)
         lon = findViewById(R.id.lon)
-        // Update location immediately and after in interval of 30 sec:
-        startGPSUpdate()
         // Set locale and country:
         sDefSystemLanguage = Locale.getDefault().language
         val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
@@ -173,7 +175,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
     /**
      * Set location variables
-     * Initialize FusedLocationProviderClient and LocationCallback.
+     * Initialize FusedLocationProviderClient.
      */
     private fun setLocationVariables() {
         // set LocationRequest settings:
@@ -183,17 +185,6 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
         // initialize FusedLocationClient:
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        // LocationCallback:
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(p0: LocationResult) {
-                super.onLocationResult(p0)
-                // Save last location in latestLocation variable:
-                latestLocation = p0.lastLocation
-                // Make forecast button visible when latestLocation has been set:
-                forecastButton.visibility = View.VISIBLE
-            }
-        }
     }
 
     /**
@@ -217,15 +208,11 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
         // Get weather data based on latestLocation. UI values are updated in getGPSWeather function:
         getByLocationBtn.setOnClickListener {
-            if (hasLocationPermission()) {
-                getGPSWeather()
-                searched = false
-                // Set location text to be "My location:"
-                val st = "My location:"
-                locationTextView.text = st
-            } else {
-                requestLocationPermission()
-            }
+            getGPSWeather()
+            searched = false
+            // Set location text to be "My location:"
+            val st = "My location:"
+            locationTextView.text = st
         }
 
         // Start forecast activity. putExtra the intent based on the boolean searched:
@@ -234,7 +221,12 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             if (searched) {
                 intent.putExtra("city", searchText.text.toString())
             } else {
-                intent.putExtra("coords", latestLocation)
+                if(latestLocation != null) {
+                    intent.putExtra("lat", latestLocation?.latitude?.toString())
+                    intent.putExtra("lon", latestLocation?.longitude?.toString())
+                } else {
+                    intent.putExtra("city", cityName.text.toString())
+                }
             }
             startActivity(intent)
         }
@@ -253,8 +245,8 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             }"
             val temp = "${weather.main?.temp.toString()} °C"
             val wind = "${weather.wind?.speed.toString()} m/s"
-            val lt = "Latitude: " + weather.coord?.lat.toString().substring(0, 6)
-            val ln = "Longitude: " + weather.coord?.lon.toString().substring(0, 6)
+            val lt = weather.coord?.lat.toString().substring(0, 6)
+            val ln = weather.coord?.lon.toString().substring(0, 6)
             // Run value updates on Ui thread
             this.runOnUiThread() {
                 weatherDate.text = time
@@ -268,6 +260,8 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
                 Picasso.get()
                     .load("https://openweathermap.org/img/w/${weather.weather?.get(0)?.icon}.png")
                     .into(iconView)
+                // Make forecast button visible when latestLocation has been set:
+                forecastButton.visibility = View.VISIBLE
             }
         }
     }
@@ -275,13 +269,21 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     /**
      * Function for starting GPS location updates by requesting them from LocationServices.FusedLocationProviderClient.
      * Not actually missing any permissions. Lint does not recognize EasyPermissions permission.
-     * Check if app has location permission and start requesting location updates.
+     * Check if app has location permission, initialize LocationCallback and start requesting location updates.
      * If permission not granted then request location permission.
      *
      */
     @SuppressLint("MissingPermission")
     private fun startGPSUpdate() {
         if (hasLocationPermission()) {
+            // LocationCallback:
+            locationCallback = object : LocationCallback() {
+                override fun onLocationResult(p0: LocationResult) {
+                    super.onLocationResult(p0)
+                    // Save last location in latestLocation variable:
+                    latestLocation = p0.lastLocation
+                }
+            }
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
@@ -441,6 +443,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
      */
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         Toast.makeText(applicationContext, "Permission Granted!", Toast.LENGTH_SHORT).show()
+        startGPSUpdate()
         getGPSWeather()
     }
 

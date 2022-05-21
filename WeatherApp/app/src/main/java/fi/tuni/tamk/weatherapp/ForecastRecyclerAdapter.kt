@@ -1,6 +1,5 @@
 package fi.tuni.tamk.weatherapp
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,14 +79,14 @@ class ForecastRecyclerAdapter(list: List<ForecastItem>) :
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
         // Initialize all of the Views used by the ForecastViewHolder:
-        val iconView: ImageView = itemView.findViewById(R.id.forecastItemIcon)
-        val date: TextView = itemView.findViewById(R.id.forecastItemDate)
-        val temp: TextView = itemView.findViewById(R.id.forecastItemTemp)
-        val wind: TextView = itemView.findViewById(R.id.forecastItemWind)
-        val conditions: TextView = itemView.findViewById(R.id.forecastItemWeather_conditions)
+        private val iconView: ImageView = itemView.findViewById(R.id.forecastItemIcon)
+        private val date: TextView = itemView.findViewById(R.id.forecastItemDate)
+        private val temp: TextView = itemView.findViewById(R.id.forecastItemTemp)
+        private val wind: TextView = itemView.findViewById(R.id.forecastItemWind)
+        private val conditions: TextView = itemView.findViewById(R.id.forecastItemWeather_conditions)
 
         // String for the icon:
-        var iconString: String = ""
+        private var iconString: String = ""
 
         /**
          * Bind all the values to the initialized views.
