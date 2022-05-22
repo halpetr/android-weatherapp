@@ -267,7 +267,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
                 lon.text = ln
                 // Use Picasso to load the weather icon into the ImageView:
                 Picasso.get()
-                    .load("https://openweathermap.org/img/w/${weather.weather?.get(0)?.icon}.png")
+                    .load("https://openweathermap.org/img/wn/${weather.weather?.get(0)?.icon}@2x.png")
                     .into(iconView)
                 // Make forecast button visible when latestLocation has been set:
                 forecastButton.visibility = View.VISIBLE
