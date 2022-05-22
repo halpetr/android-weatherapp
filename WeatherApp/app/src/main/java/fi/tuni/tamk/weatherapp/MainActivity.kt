@@ -134,8 +134,6 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     override fun onResume() {
         super.onResume()
         initElements()
-        // Get current weather based on gps location of the device:
-        getGPSWeather()
     }
 
     /**
