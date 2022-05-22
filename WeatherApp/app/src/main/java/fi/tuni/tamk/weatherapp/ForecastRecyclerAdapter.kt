@@ -102,7 +102,7 @@ class ForecastRecyclerAdapter(list: List<ForecastItem>) :
             conditions.text = forecastItem.weather?.get(0)?.main
             iconString = forecastItem.weather?.get(0)?.icon.toString()
             Picasso.get()
-                .load("https://openweathermap.org/img/w/${iconString}.png")
+                .load("https://openweathermap.org/img/wn/${iconString}@2x.png")
                 .into(iconView)
         }
 
