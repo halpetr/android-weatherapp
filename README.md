@@ -4,7 +4,7 @@ An app for getting current weather information based on user location or by sear
 # Author
 Petr Halinen
 # Screenshots
-![image](https://user-images.githubusercontent.com/72746614/169654338-74b046a2-df5d-47e9-b6f7-b90dd79d45f9.png) ![image](https://user-images.githubusercontent.com/72746614/169654379-e2d6c8b2-ea6e-406f-b360-28058336b8ed.png)
+![image](https://user-images.githubusercontent.com/72746614/169691086-bf8773ba-12eb-44c4-ba54-a69ffc0390c9.png) ![image](https://user-images.githubusercontent.com/72746614/169691102-45f054a9-93fb-4446-8526-ce008408cb5e.png)
 # Tech/framework used
 Created using Kotlin on Android platform. Using https://openweathermap.org/api API for weather info.
 # Installation
