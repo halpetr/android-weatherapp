@@ -243,10 +243,19 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             val conditions = "${weather.weather?.get(0)?.main.toString()}\n${
                 weather.weather?.get(0)?.description.toString()
             }"
-            val temp = "${weather.main?.temp.toString()} °C"
-            val wind = "${weather.wind?.speed.toString()} m/s"
-            val lt = weather.coord?.lat.toString().substring(0, 6)
-            val ln = weather.coord?.lon.toString().substring(0, 6)
+            val temp = "${weather.main?.temp?.toString()} °C"
+            val wind = "${weather.wind?.speed?.toString()} m/s"
+            // Make latitude and logitude look better:
+            val lt = if(weather.coord?.lat.toString().length < 6) {
+                weather.coord?.lat.toString().substring(0, weather.coord?.lat.toString().length)
+            } else {
+                weather.coord?.lat.toString().substring(0, 6)
+            }
+            val ln = if(weather.coord?.lon.toString().length < 6) {
+                weather.coord?.lon.toString().substring(0, weather.coord?.lon.toString().length)
+            } else {
+                weather.coord?.lon.toString().substring(0, 6)
+            }
             // Run value updates on Ui thread
             this.runOnUiThread() {
                 weatherDate.text = time
