@@ -2,20 +2,25 @@ package fi.tuni.tamk.weatherapp
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.android.gms.location.*
@@ -23,13 +28,14 @@ import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
-import fi.tuni.tamk.weatherapp.current_weather_data.WeatherObject
 import fi.tuni.tamk.weatherapp.R.id.*
+import fi.tuni.tamk.weatherapp.current_weather_data.WeatherObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
+
 
 // Location Interval requesting constants:
 private const val INTERVAL_NORMAL: Long = 30
@@ -125,10 +131,17 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         // Initialize Views and variables:
         initElements()
         setOnClickListeners()
-        // Update location immediately and after in interval of 30 sec:
-        startGPSUpdate()
-        // Get current weather based on gps location of the device:
-        getGPSWeather()
+
+        if(isLocationEnabled()  && hasLocationPermission()) {
+            // Update location immediately and after in interval of 30 sec:
+            startGPSUpdate()
+            // Get current weather based on gps location of the device:
+            getGPSWeather()
+        } else if(isLocationEnabled() && !hasLocationPermission()) {
+            requestLocationPermission()
+        } else if(!isLocationEnabled() && hasLocationPermission()) {
+            gpsNotEnabled()
+        }
     }
 
     override fun onResume() {
@@ -186,6 +199,16 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     }
 
     /**
+     * Function for checking if GPS provider is enabled in the device
+     *
+     * @return boolean value of the GPS provider state
+     */
+    private fun isLocationEnabled() : Boolean {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
+    /**
      * Set onClickListeners for all 3 buttons:
      *
      */
@@ -206,27 +229,49 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
         // Get weather data based on latestLocation. UI values are updated in getGPSWeather function:
         getByLocationBtn.setOnClickListener {
-            getGPSWeather()
-            searched = false
-            // Set location text to be "My location:"
-            val st = "My location:"
-            locationTextView.text = st
+            if(isLocationEnabled() && hasLocationPermission()) {
+                getGPSWeather()
+                searched = false
+                // Set location text to be "My location:"
+                val st = "My location:"
+                locationTextView.text = st
+            } else if(isLocationEnabled() && !hasLocationPermission()) {
+                requestLocationPermission()
+            } else if(!isLocationEnabled() && hasLocationPermission()) {
+                gpsNotEnabled()
+            }
         }
 
         // Start forecast activity. putExtra the intent based on the boolean searched:
         forecastButton.setOnClickListener {
-            val intent = Intent(this, ForecastActivity::class.java)
-            if (searched) {
-                intent.putExtra("city", searchText.text.toString())
-            } else {
-                if(latestLocation != null) {
-                    intent.putExtra("lat", latestLocation?.latitude?.toString())
-                    intent.putExtra("lon", latestLocation?.longitude?.toString())
+            if(isLocationEnabled()) {
+                val intent = Intent(this, ForecastActivity::class.java)
+                if (searched) {
+                    intent.putExtra("city", searchText.text.toString())
                 } else {
-                    intent.putExtra("city", cityName.text.toString())
+                    if(latestLocation != null) {
+                        intent.putExtra("lat", latestLocation?.latitude?.toString())
+                        intent.putExtra("lon", latestLocation?.longitude?.toString())
+                    } else {
+                        intent.putExtra("city", cityName.text.toString())
+                    }
                 }
+                startActivity(intent)
+            } else if(isLocationEnabled() && !hasLocationPermission()) {
+                requestLocationPermission()
+            } else if(!isLocationEnabled() && hasLocationPermission()) {
+                gpsNotEnabled()
             }
-            startActivity(intent)
+        }
+    }
+
+    private fun gpsNotEnabled() {
+        this.runOnUiThread {
+            Toast.makeText(
+                applicationContext,
+                "Please enable GPS on the device, to access this function!",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -282,7 +327,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
      */
     @SuppressLint("MissingPermission")
     private fun startGPSUpdate() {
-        if (hasLocationPermission()) {
+        if (hasLocationPermission() && isLocationEnabled()) {
             // LocationCallback:
             locationCallback = object : LocationCallback() {
                 override fun onLocationResult(p0: LocationResult) {
